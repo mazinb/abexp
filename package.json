@@ -1,0 +1,23 @@
+{
+  "name": "flow-builder",
+  "version": "1.0.0",
+  "description": "MVP of the open source flow builder",
+  "main": "index.js",
+  "scripts": {
+    "test": "test index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mazinb/flow_builder.git"
+  },
+  "author": "mazin",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mazinb/flow_builder/issues"
+  },
+  "homepage": "https://github.com/mazinb/flow_builder#readme",
+  "dependencies": {
+    "express": "^4.19.1",
+    "nodemon": "^3.1.0"
+  }
+}
