@@ -10,9 +10,10 @@ app.use(bodyParser.json());
 // Endpoint to start the conversation
 app.post('/conversation', async (req, res) => {
     try {
+        console.log('in conversaion')
         // Receive conversation flow from the request body
         const conversationFlow = req.body;
-
+        console.log(req.body);
         // Execute the conversation flow
         let currentPage = 0;
         let response;
@@ -42,8 +43,11 @@ app.post('/conversation', async (req, res) => {
 
 // Function to execute a step of the conversation
 async function executeStep(step) {
-    // Execute the provided code using eval
-    const result = eval(step);
+    // Convert the step string to a function
+    const stepFunction = new Function('response', step);
+
+    // Execute the step function
+    const result = await stepFunction();
 
     // Return the result of the step execution
     return result;
@@ -53,3 +57,6 @@ async function executeStep(step) {
 app.listen(port, () => {
     console.log(`Server is running at http://localhost:${port}`);
 });
+
+//Needed for jest tests
+module.exports = app;
