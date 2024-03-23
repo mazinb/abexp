@@ -1,6 +1,12 @@
 const conversationFlow = [
+    //test first step
+    `console.log('test step')
+    const question = "Do you want to continue?";
+    const options = ["Yes", "No"];
+    console.log(question)`,
     // Step 1: Ask the initial question
     `async function step1() {
+        console.log('in step 1');
         const question = "Do you want to continue?";
         const options = ["Yes", "No"];
         return { question, options };
@@ -28,3 +34,66 @@ const conversationFlow = [
         return "No selected";
     }`
 ];
+
+const conversationFlow2 = [
+    {
+      question: "Do you want to continue?",
+      options: [
+        {
+          text: "Yes",
+          next: 1 // Index of the next step in the conversation flow array
+        },
+        {
+          text: "No",
+          next: 3 // Index of the next step in the conversation flow array
+        }
+      ]
+    },
+    {
+      question: "What's your favorite color?",
+      options: [
+        {
+          text: "Blue",
+          next: 2
+        },
+        {
+          text: "Red",
+          next: 2
+        }
+      ]
+    },
+    {
+      question: "What's your favorite animal?",
+      options: [
+        {
+          text: "Dog",
+          next: 4
+        },
+        {
+          text: "Cat",
+          next: 4
+        }
+      ]
+    },
+    {
+      answer: "You chose to continue."
+    },
+    {
+      answer: "You chose to stop."
+    },
+    {
+      answer: "Your favorite color is Blue."
+    },
+    {
+      answer: "Your favorite color is Red."
+    },
+    {
+      answer: "Your favorite animal is Dog."
+    },
+    {
+      answer: "Your favorite animal is Cat."
+    }
+  ];  
+
+//Needed for jest tests
+module.exports = conversationFlow2;
