@@ -1,0 +1,49 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+#banner {
+  background-color: green;
+  color: white;
+  padding: 10px; /* Increase the padding to make the banner larger */
+  text-align: center;
+  position: relative;
+}
+
+#banner p {
+  margin-bottom: 30px; /* Add margin to separate the text and button */
+}
+
+#changeExperienceButton {
+  position: absolute;
+  bottom: 5px; /* Adjust the button position vertically */
+  left: 50%; /* Center the button horizontally */
+  transform: translateX(-50%);
+  background-color: rgba(255, 255, 255, 0.1);
+  border: none;
+  color: white;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+#changeExperienceButton:hover {
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
+#expSection {
+  display: none;
+  padding: 20px;
+}
+
+#expSection.active {
+  display: block;
+  background-color: lightgrey;
+}
+
+#expResponse {
+  white-space: pre-wrap;
+}
