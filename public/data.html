@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Display</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        th, td {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h1>Data Display</h1>
+    <h2>Experiment Info</h2>
+    <table id="experimentInfoTable">
+        <tbody>
+            <!-- Data will be dynamically inserted here -->
+        </tbody>
+    </table>
+    <h2>Run Data</h2>
+    <table id="runDataTable">
+        <tbody>
+            <!-- Data will be dynamically inserted here -->
+        </tbody>
+    </table>
+    <script>
+        // Fetch data from the mock endpoint
+        fetch('/api/mock-endpoint')
+            .then(response => response.json())
+            .then(data => {
+                const experimentInfoTable = document.getElementById('experimentInfoTable');
+                const runDataTable = document.getElementById('runDataTable');
+                const experimentInfo = data.experimentInfo;
+                const runData = experimentInfo.runData;
+
+                // Populate experimentInfo table
+                for (const property in experimentInfo) {
+                    if (Object.hasOwnProperty.call(experimentInfo, property) && property !== 'runData') {
+                        const value = experimentInfo[property];
+                        const row = experimentInfoTable.insertRow();
+                        row.insertCell(0).textContent = property;
+                        row.insertCell(1).textContent = value;
+                    }
+                }
+
+                // Populate runData table
+                for (const property in runData) {
+                    if (Object.hasOwnProperty.call(runData, property) && property !== 'allocatedUsers') {
+                        const value = runData[property];
+                        const row = runDataTable.insertRow();
+                        row.insertCell(0).textContent = property;
+                        row.insertCell(1).textContent = value;
+                    }
+                }
+
+                // Add rows for allocated users count
+                const allocatedUsersRow = runDataTable.insertRow();
+                allocatedUsersRow.insertCell(0).textContent = 'Allocated Users (A)';
+                allocatedUsersRow.insertCell(1).textContent = runData.allocatedUsers.A;
+
+                const allocatedUsersRow2 = runDataTable.insertRow();
+                allocatedUsersRow2.insertCell(0).textContent = 'Allocated Users (B)';
+                allocatedUsersRow2.insertCell(1).textContent = runData.allocatedUsers.B;
+            })
+            .catch(error => console.error('Error fetching data:', error));
+    </script>
+</body>
+</html>
