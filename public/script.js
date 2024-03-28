@@ -4,6 +4,10 @@ function toggleExperience() {
     expSection.classList.toggle('active');
 }
 
+function allocate(){
+    
+}
+
 // Function to generate a random user ID or retrieve existing user ID from cookie
 function generateUserID() {
     var userID = getCookie('userID');
@@ -22,7 +26,23 @@ function generateUserID() {
 function updateBanner() {
     var userID = generateUserID();
     var bannerText = document.getElementById('bannerText');
-    bannerText.innerHTML = "You are on the A side, User ID: <strong>" + userID + "</strong>";
+    fetch('/allocation', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ userId: userID })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.experimentInfo.variant === "B") {
+            bannerText.innerHTML = "You are on the B side, User ID: <strong>" + userID + "</strong>";
+            banner.style.backgroundColor = 'blue';
+        } else {
+            bannerText.innerHTML = "You are on the A side, User ID: <strong>" + userID + "</strong>";
+            banner.style.backgroundColor = 'green';
+        }
+    });
 }
 
 // Call updateBanner() when the page loads

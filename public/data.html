@@ -34,8 +34,8 @@
         </tbody>
     </table>
     <script>
-        // Fetch data from the mock endpoint
-        fetch('/api/mock-endpoint')
+        // Fetch data from the status endpoint
+        fetch('/status')
             .then(response => response.json())
             .then(data => {
                 const experimentInfoTable = document.getElementById('experimentInfoTable');
