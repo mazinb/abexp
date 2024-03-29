@@ -23,8 +23,24 @@
 </div>
 
 <div style="padding: 20px;">
-  <h2>About A/B Testing</h2>
-  <p>A/B testing is a method used to compare two versions of a web page or app against each other to determine which one performs better.</p>
+  <h1>A/B Testing Tool Demo</h1>
+
+    <p>Welcome to our A/B Testing Tool demo! This page showcases the functionality of our A/B testing tool, which allows you to perform experiments to compare different versions of a web page or application.</p>
+
+    <h2>How It Works</h2>
+    <p>Our A/B testing tool randomly assigns users to different variations (A or B) of an experiment. You can see which variation you are currently assigned to at the top of the page. Click the "Change Experience" button to switch between variations.</p>
+
+    <p>Click the "See API response" button to view the API response for the allocation of users to experiment variations. You can also navigate to the <a href="/events">Events</a> page to view a summary of tracked events and the <a href="/data">Data</a> page to explore experiment data.</p>
+
+    <h2>Create Your Own Experiment</h2>
+    <p>For full API documentation, please visit <a href="https://routingnumbanklookup.herokuapp.com/abex/api/api-docs/">here</a>.</p>
+    <p>Want to create your own experiment? Enter the name of your experiment below and click "Create Experiment".</p>
+    <form id="createExperimentForm">
+        <label for="experimentName">Experiment Name:</label>
+        <input type="text" id="experimentName" name="experimentName" required>
+        <button type="submit">Create Experiment</button>
+    </form>
+    <div id="messageContainer"></div>
 </div>
 
 <script src="./script.js"></script>

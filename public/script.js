@@ -4,10 +4,6 @@ function toggleExperience() {
     expSection.classList.toggle('active');
 }
 
-function allocate(){
-    
-}
-
 // Function to generate a random user ID or retrieve existing user ID from cookie
 function generateUserID() {
     var userID = getCookie('userID');
@@ -15,7 +11,6 @@ function generateUserID() {
         userID = Math.random().toString(36).substr(2, 9);
         // Set user ID cookie with expiration time (1 year)
         setCookie('userID', userID, 365);
-        console.log("New User ID generated:", userID);
     } else {
         console.log("Existing User ID retrieved:", userID);
     }
@@ -55,10 +50,8 @@ function setCookie(name, value, days) {
         var date = new Date();
         date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000)); // Set expiration for one year
         expires = "; expires=" + date.toUTCString();
-        console.log("Cookie expiration date:", date.toUTCString());
     }
     document.cookie = name + "=" + (value || "") + expires + "; path=/";
-    console.log("Cookie set:", name, value);
 }
 
 // Function to get a cookie
@@ -109,8 +102,6 @@ function changeExperience() {
     var button = document.getElementById('changeExperienceButton');
     
     var userID = generateUserID(); // Retrieve user ID from the cookie
-
-    console.log(banner.style)
     
     if (banner.style.backgroundColor === 'green') {
         // Change to B side
@@ -167,8 +158,73 @@ var initialJsonObject = {
 };
 updateJSON(initialJsonObject);
 
-// Add event listener to the change experience button
-document.getElementById('changeExperienceButton').addEventListener('click', changeExperience);
+// Function to submit data to create experiment
+async function submitExperiment(event) {
+    event.preventDefault();
+    const experimentName = document.getElementById('experimentName').value;
+    try {
+        const response = await fetch('/create', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ "experimentName": experimentName })
+        });
+    
+        const data = await response.json();
+        const message = document.createElement('div');
 
-// Add event listener to the toggle button
+        if (response.ok) {
+            const experimentInfo = data.experimentInfo;
+            message.textContent = `Experiment created successfully! Name: ${experimentInfo.experimentName}, Experiment ID: ${experimentInfo.experimentId}. Please save the experiment Name and ID if you want to use it.`;
+            trackEvent('experiment_created', experimentInfo);
+        } else if (response.status === 422) {
+            const errorMessage = data.message;
+            message.textContent = `Failed to create experiment: ${errorMessage}`;
+            trackEvent('experiment_creation_failed', errorMessage);
+        }
+        message.classList.add('success-message');
+        messageContainer.appendChild(message);
+    } catch (error) {
+        console.error('Error creating experiment:', error);
+        alert('Failed to create experiment. Please try again.');
+    }
+}
+
+
+// Function to track events and store them in local storage
+function trackEvent(eventType, eventData) {
+    const event = {
+        type: eventType,
+        timestamp: new Date(),
+        data: eventData
+    };
+
+    // Retrieve existing events from local storage
+    let events = JSON.parse(localStorage.getItem('events')) || [];
+    
+    // Add the new event to the events array
+    events.push(event);
+    
+    // Store the updated events array back to local storage
+    localStorage.setItem('events', JSON.stringify(events));
+}
+
+// Attach event listeners to relevant elements
+document.addEventListener('DOMContentLoaded', function () {
+    const allElements = document.querySelectorAll('*');
+    allElements.forEach(element => {
+        element.addEventListener('click', function (event) {
+            trackEvent('click', { target: event.target.tagName, id: event.target.id });
+        });
+        element.addEventListener('change', function (event) {
+            trackEvent('change', { target: event.target.tagName, id: event.target.id, value: event.target.value });
+        });
+        // Add more event types as needed (e.g., mouseover, submit, etc.)
+    });
+});
+
+// Add event listeners
+document.getElementById('changeExperienceButton').addEventListener('click', changeExperience);
+document.getElementById('createExperimentForm').addEventListener('submit', submitExperiment);
 document.getElementById('toggleButton').addEventListener('click', toggleExperience);

@@ -4,7 +4,8 @@
   "description": "MVP of the open source flow builder",
   "main": "index.js",
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "deploy": "firebase deploy --only functions"
   },
   "repository": {
     "type": "git",
@@ -17,10 +18,12 @@
   },
   "homepage": "https://github.com/mazinb/flow_builder#readme",
   "dependencies": {
-    "express": "^4.19.1"
+    "express": "^4.19.1",
+    "firebase-admin": "^12.0.0",
+    "firebase-functions": "^4.8.1",
+    "axios": "^1.6.8"
   },
   "devDependencies": {
-    "axios": "^1.6.8",
     "jest": "^27.5.0",
     "supertest": "^6.1.6"
   }

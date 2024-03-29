@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Summarization Page</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h1>Event Summarization</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Type</th>
+                <th>Timestamp</th>
+                <th>Data</th>
+            </tr>
+        </thead>
+        <tbody id="summary"></tbody>
+    </table>
+    <script>
+        // Retrieve event data from local storage
+        const events = JSON.parse(localStorage.getItem('events')) || [];
+
+        // Display event summaries in a table
+        const summaryContainer = document.getElementById('summary');
+        events.forEach(event => {
+            const row = summaryContainer.insertRow();
+            const typeCell = row.insertCell();
+            const timestampCell = row.insertCell();
+            const dataCell = row.insertCell();
+
+            typeCell.textContent = event.type;
+            timestampCell.textContent = event.timestamp;
+            dataCell.textContent = JSON.stringify(event.data);
+        });
+    </script>
+</body>
+</html>
