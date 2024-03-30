@@ -61,7 +61,7 @@ app.get('/status', async(req,res)=>{
 });
 
 app.get('/data', (req, res) => {
-    //console.log(req.query);
+
     let experimentName = '';
     let experimentId = '';
 
@@ -162,8 +162,3 @@ app.post('/create',async(req,res)=>{
 app.listen(port, () => {
     console.log(`Server is running at http://localhost:${port}`);
 });
-
-//exports.api = functions.https.onRequest(app)
-
-//Needed for jest tests
-module.exports = app;
