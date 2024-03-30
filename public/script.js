@@ -178,6 +178,19 @@ async function submitExperiment(event) {
             const experimentInfo = data.experimentInfo;
             message.textContent = `Experiment created successfully! Name: ${experimentInfo.experimentName}, Experiment ID: ${experimentInfo.experimentId}. Please save the experiment Name and ID if you want to use it.`;
             trackEvent('experiment_created', experimentInfo);
+            // Hide the createExperimentForm
+            const createExperimentForm = document.getElementById('createExperimentForm');
+            createExperimentForm.style.display = 'none';
+            // Create a button to view experiment details
+            const viewButton = document.createElement('button');
+            viewButton.textContent = 'View Experiment Details';
+            viewButton.addEventListener('click', () => {
+                // Redirect to the data page with query parameters
+                trackEvent('route_to_exp_data',experimentInfo);
+                window.location.href = `/data?experimentName=${experimentInfo.experimentName}&experimentId=${experimentInfo.experimentId}`;
+            });
+            message.appendChild(viewButton);
+
         } else if (response.status === 422) {
             const errorMessage = data.message;
             message.textContent = `Failed to create experiment: ${errorMessage}`;

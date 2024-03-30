@@ -35,6 +35,9 @@
         // Retrieve event data from local storage
         const events = JSON.parse(localStorage.getItem('events')) || [];
 
+        // Sort events by timestamp (newest to oldest)
+        events.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+
         // Display event summaries in a table
         const summaryContainer = document.getElementById('summary');
         events.forEach(event => {

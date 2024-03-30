@@ -21,27 +21,39 @@
 </head>
 <body>
     <h1>Data Display</h1>
+    <p>Bookmark this page and save your experiment name and Id to try out the allocate end point in your project</p>
     <h2>Experiment Info</h2>
     <table id="experimentInfoTable">
         <tbody>
             <!-- Data will be dynamically inserted here -->
         </tbody>
     </table>
-    <h2>Run Data</h2>
+    <h2>Run Actions</h2>
     <table id="runDataTable">
         <tbody>
             <!-- Data will be dynamically inserted here -->
         </tbody>
     </table>
+    <div id="actionButtons"></div>
     <script>
-        // Fetch data from the status endpoint
-        fetch('/status')
+        // Function to refresh the page
+        function refreshPage() {
+            window.location.reload();
+        }
+        // Fetch data from the status endpoint using URL parameters or load banner experiment as default
+        const urlParams = new URLSearchParams(window.location.search);
+        const experimentName = urlParams.get('experimentName') || 'banner_exp_01';
+        const experimentId = urlParams.get('experimentId') || '98761121';
+
+        fetch(`/status?experimentName=${experimentName}&experimentId=${experimentId}`)
             .then(response => response.json())
             .then(data => {
                 const experimentInfoTable = document.getElementById('experimentInfoTable');
                 const runDataTable = document.getElementById('runDataTable');
+                const actionButtons = document.getElementById('actionButtons');
                 const experimentInfo = data.experimentInfo;
                 const runData = experimentInfo.runData;
+                const experimentStatus = experimentInfo.experimentStatus;
 
                 // Populate experimentInfo table
                 for (const property in experimentInfo) {
@@ -53,24 +65,139 @@
                     }
                 }
 
-                // Populate runData table
-                for (const property in runData) {
-                    if (Object.hasOwnProperty.call(runData, property) && property !== 'allocatedUsers') {
-                        const value = runData[property];
-                        const row = runDataTable.insertRow();
-                        row.insertCell(0).textContent = property;
-                        row.insertCell(1).textContent = value;
+                // Display action buttons based on experiment status
+                if (experimentStatus === 'Not started') {
+                    const startButton = document.createElement('button');
+                    startButton.textContent = 'Start Experiment';
+                    startButton.onclick = async () => {
+                        const durationDays = prompt('Enter duration in days (optional)');
+                        const sampleSize = prompt('Enter sample size (optional)');
+                        const trafficRate = prompt('Enter traffic rate (optional)');
+                        
+                        const queryParams = {
+                            experimentName: experimentInfo.experimentName,
+                            experimentId: experimentInfo.experimentId,
+                            durationDays: durationDays || 14, // Default value if not provided
+                            sampleSize: sampleSize || '', // Empty string if not provided
+                            trafficRate: trafficRate || '' // Empty string if not provided
+                        };
+
+                        try {
+                            const response = await fetch('/start', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify(queryParams)
+                            });
+                            const data = await response.json();
+                            // Handle response as needed
+                            refreshPage(); // Refresh the page after action
+                        } catch (error) {
+                            console.error('Error starting experiment:', error);
+                            alert('Failed to start experiment. Please try again.');
+                        }
+                    };
+                    actionButtons.appendChild(startButton);
+                } else if (experimentStatus === 'Running') {
+                    const flatOffButton = document.createElement('button');
+                    flatOffButton.textContent = 'Flat Off';
+                    flatOffButton.onclick = async () => {
+                        try {
+                            // Implement logic to flat off
+                            const response = await fetch('/restart', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({
+                                    experimentName: experimentInfo.experimentName,
+                                    experimentId: experimentInfo.experimentId
+                                })
+                            });
+                            const data = await response.json();
+                            // Handle response as needed
+                            refreshPage(); // Refresh the page after action
+                        } catch (error) {
+                            console.error('Error flattening off experiment:', error);
+                            alert('Failed to flatten off experiment. Please try again.');
+                        }
+                    };
+                    actionButtons.appendChild(flatOffButton);
+
+                    const flatBButton = document.createElement('button');
+                    flatBButton.textContent = 'Flat B';
+                    flatBButton.onclick = async () => {
+                        try {
+                            // Implement logic to flat B
+                            const response = await fetch('/decision', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({
+                                    experimentName: experimentInfo.experimentName,
+                                    experimentId: experimentInfo.experimentId,
+                                    decision: 'B'
+                                })
+                            });
+                            const data = await response.json();
+                            // Handle response as needed
+                            refreshPage(); // Refresh the page after action
+                        } catch (error) {
+                            console.error('Error making decision B:', error);
+                            alert('Failed to make decision B. Please try again.');
+                        }
+                    };
+                    actionButtons.appendChild(flatBButton);
+                } else if (experimentStatus === 'Flat B') {
+                    const stopButton = document.createElement('button');
+                    stopButton.textContent = 'Stop Experiment';
+                    stopButton.onclick = async () => {
+                        try {
+                            // Implement logic to stop the experiment
+                            const response = await fetch('/stop', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({
+                                    experimentName: experimentInfo.experimentName,
+                                    experimentId: experimentInfo.experimentId
+                                })
+                            });
+                            const data = await response.json();
+                            // Handle response as needed
+                            refreshPage(); // Refresh the page after action
+                        } catch (error) {
+                            console.error('Error stopping experiment:', error);
+                            alert('Failed to stop experiment. Please try again.');
+                        }
+                    };
+                    actionButtons.appendChild(stopButton);
+                }
+                if (experimentStatus !== 'Not started') {
+                    // Populate runData table
+                    for (const property in runData) {
+                        if (Object.hasOwnProperty.call(runData, property) && property !== 'allocatedUsers') {
+                            const value = runData[property];
+                            const row = runDataTable.insertRow();
+                            row.insertCell(0).textContent = property;
+                            row.insertCell(1).textContent = value;
+                        }
+                    }
+                    if(runData.allocatedUsers){
+                        // Add rows for allocated users count
+                        const allocatedUsersRow = runDataTable.insertRow();
+                        allocatedUsersRow.insertCell(0).textContent = 'Allocated Users (A)';
+                        allocatedUsersRow.insertCell(1).textContent = runData.allocatedUsers.A;
+
+                        const allocatedUsersRow2 = runDataTable.insertRow();
+                        allocatedUsersRow2.insertCell(0).textContent = 'Allocated Users (B)';
+                        allocatedUsersRow2.insertCell(1).textContent = runData.allocatedUsers.B;
                     }
                 }
 
-                // Add rows for allocated users count
-                const allocatedUsersRow = runDataTable.insertRow();
-                allocatedUsersRow.insertCell(0).textContent = 'Allocated Users (A)';
-                allocatedUsersRow.insertCell(1).textContent = runData.allocatedUsers.A;
-
-                const allocatedUsersRow2 = runDataTable.insertRow();
-                allocatedUsersRow2.insertCell(0).textContent = 'Allocated Users (B)';
-                allocatedUsersRow2.insertCell(1).textContent = runData.allocatedUsers.B;
             })
             .catch(error => console.error('Error fetching data:', error));
     </script>

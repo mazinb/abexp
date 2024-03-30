@@ -41,19 +41,36 @@ app.post('/allocation', async (req, res) => {
 
 app.get('/status', async(req,res)=>{
 
-    // Define the payload
-    const data = {
-        "experimentName": "banner_exp_01",//required - saved experiment name
-        "experimentId": 98761121, //required - saved experiment Id
-    };
+    console.log(req.query);
 
-    const response = await axios.get(endpoint+`status/?experimentName=${data.experimentName}&experimentId=${data.experimentId}`, { headers });
-
-    res.send(response.data);
+    try {
+        const response = await axios.get(endpoint+`status/?experimentName=${req.query.experimentName}&experimentId=${req.query.experimentId}`, { headers });
+        
+        if (response.data.status === 'fail') {
+            // If the API response indicates failure, send the error message
+            res.status(response.status).send(response.data.message);
+        } else {
+            // If the API response indicates success, send the experiment status data
+            res.send(response.data);
+        }
+    } catch (error) {
+        //console.error('Error fetching experiment status:', error);
+        res.status(500).send('Internal Server Error');
+    }
 
 });
 
 app.get('/data', (req, res) => {
+    //console.log(req.query);
+    let experimentName = '';
+    let experimentId = '';
+
+    if (req.query.experimentName && req.query.experimentId) {
+        experimentName = req.query.experimentName;
+        experimentId = req.query.experimentId;
+    } else {
+        console.log('No experimentName or experimentId provided in query parameters. Loading default banner experiment.');
+    }
     res.sendFile(path.join(__dirname, 'public', 'data.html'));
 });
 
@@ -61,26 +78,64 @@ app.get('/events', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'events.html'));
 });
 
-app.get('/start',async(req,res)=>{
+app.post('/start',async(req,res)=>{
 
-    // Define the payload
-    const data = {
+    console.log(req.body);
+
+    /*body = {
         "experimentName": "banner_exp_01",//required - saved experiment name
         "experimentId": 98761121, //required - saved experiment Id
-        //"durationDays": 30, //optional - defauly 14
-        //"sampleSize": 1000, //optional 
-        //"trafficRate": 100 //optional 0 - 100
-    };
+        "durationDays": 30, //optional - default 14
+        "sampleSize": 1000, //optional 
+        "trafficRate": 100 //optional 0 - 100
+    };*/
 
-    const response = await axios.post(endpoint+'start', data, { headers });
+    const response = await axios.post(endpoint+'start', req.body, { headers });
+    res.send(response.data);
 
+});
+
+app.post('/restart',async(req,res)=>{
+
+    /*body = {
+        "experimentName": "MyFirstExperiment",
+        "experimentId": 17945202,
+        "durationDays": 30, //optional - default 14
+        "sampleSize": 1000, //optional 
+        "trafficRate": 100 //optional 0 - 100
+    }*/
+
+    const response = await axios.post(endpoint+'restart', req.body, { headers });
+    res.send(response.data);
+
+});
+
+app.post('/stop',async(req,res)=>{
+    
+    /*body = {
+        "experimentName": "MyFirstExperiment",
+        "experimentId": 17945202
+    }*/
+
+    const response = await axios.post(endpoint+'stop', req.body, { headers });
+    res.send(response.data);
+
+});
+
+app.post('/decision',async(req,res)=>{
+
+    /*body = {
+        "experimentName": "MyFirstExperiment",
+        "experimentId": 17945202,
+        "decision": "B"
+    }*/
+
+    const response = await axios.post(endpoint+'decision', req.body, { headers });
     res.send(response.data);
 
 });
 
 app.post('/create',async(req,res)=>{
-
-    console.log(req.body);
 
     try {
         // Make the HTTP request
@@ -88,7 +143,6 @@ app.post('/create',async(req,res)=>{
 
         //Make sure to save experimentName and experimentId so you can access your experiment later
 
-        // Assert that the response is successful
         res.send(response.data);
 
     } catch (error) {
