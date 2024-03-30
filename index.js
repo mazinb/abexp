@@ -2,13 +2,12 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const axios = require('axios');
 const path = require('path');
-const functions = require('firebase-functions');
 
 const app = express();
 const port = process.env.PORT || 8280;
 
-// Define the API key - need to move to .env variable
-const apiKey = '6a8bd65056746d3aaa8d16ba6f0f3b8dec75899f678225020d2e51bd5baa800539b8737c86661cedd90ecf0a4b9a3ca3ddd08437dc53f444aeb82338dc83f649';
+// Add your API key here
+const apiKey = 'YOUR-API-KEY';
 
 // Define the endpoint URL
 const endpoint = 'https://routingnumbanklookup.herokuapp.com/abex/api/v1/';
@@ -40,8 +39,6 @@ app.post('/allocation', async (req, res) => {
 });
 
 app.get('/status', async(req,res)=>{
-
-    console.log(req.query);
 
     try {
         const response = await axios.get(endpoint+`status/?experimentName=${req.query.experimentName}&experimentId=${req.query.experimentId}`, { headers });
@@ -79,8 +76,6 @@ app.get('/events', (req, res) => {
 });
 
 app.post('/start',async(req,res)=>{
-
-    console.log(req.body);
 
     /*body = {
         "experimentName": "banner_exp_01",//required - saved experiment name

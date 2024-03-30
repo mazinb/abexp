@@ -14,7 +14,8 @@
   },
   "homepage": "https://github.com/mazinb/flow_builder#readme",
   "dependencies": {
-    "express": "^4.19.1",
-    "axios": "^1.6.8"
+    "axios": "^1.6.8",
+    "body-parser": "^1.20.2",
+    "express": "^4.19.1"
   }
 }
