@@ -2,12 +2,13 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const axios = require('axios');
 const path = require('path');
+require('dotenv').config();
 
 const app = express();
 const port = process.env.PORT || 8280;
 
-// Add your API key here
-const apiKey = 'YOUR-API-KEY';
+// Ass your API key here or create a .env file to store it
+const apiKey = process.env.API_KEY;
 
 // Define the endpoint URL
 const endpoint = 'https://routingnumbanklookup.herokuapp.com/abex/api/v1/';

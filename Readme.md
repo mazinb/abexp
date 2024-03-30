@@ -14,9 +14,8 @@ Make sure you have Node.js and npm installed on your machine.
 ### Installation
 
 1. Clone this repository to your local machine.
-2. Update your API key (index.js line 10).
-3. Navigate to the project directory in your terminal.
-4. Run `npm install` to install the dependencies.
+2. Navigate to the project directory in your terminal.
+3. Run `npm install` to install the dependencies.
 
 ## Usage
 
@@ -36,6 +35,12 @@ abEx demo uses the following npm packages:
 
 1. Express.js - For building the API server.
 2. Axios - For making HTTP requests to external APIs.
+3. dotenv - For loading the API key from the .env file
+4. body-parser - For handling data sent to the server
+
+## Configuration
+
+Before running the server, make sure to create a `.env` file and set your API key.
 
 ## Contributing
 
