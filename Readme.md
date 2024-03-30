@@ -25,6 +25,10 @@ abEx provides endpoints for creating, starting, stopping, and managing A/B exper
 2. Visit http://localhost:8280 to try out the demo project.
 3. Refer to the API documentation for details on each endpoint.
 
+## Live Sample Project
+
+Check out the live sample project [here](https://abexpdemo.onrender.com/).
+
 ## API Documentation
 
 The full API documentation can be found [here](https://routingnumbanklookup.herokuapp.com/abex/api/api-docs/).
