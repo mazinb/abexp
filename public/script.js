@@ -161,6 +161,7 @@ updateJSON(initialJsonObject);
 // Function to submit data to create experiment
 async function submitExperiment(event) {
     event.preventDefault();
+    var userID = generateUserID();
     const experimentName = document.getElementById('experimentName').value;
     try {
         const response = await fetch('/create', {
@@ -168,7 +169,7 @@ async function submitExperiment(event) {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ "experimentName": experimentName })
+            body: JSON.stringify({ "experimentName": experimentName, "userId": userID})
         });
     
         const data = await response.json();

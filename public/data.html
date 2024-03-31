@@ -45,7 +45,28 @@
         const experimentName = urlParams.get('experimentName') || 'banner_exp_01';
         const experimentId = urlParams.get('experimentId') || '98761121';
 
-        fetch(`/status?experimentName=${experimentName}&experimentId=${experimentId}`)
+        function getCookie(name) {
+            var nameEQ = name + "=";
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = cookies[i];
+                while (cookie.charAt(0) == ' ') {
+                    cookie = cookie.substring(1, cookie.length);
+                }
+                if (cookie.indexOf(nameEQ) == 0) {
+                    return cookie.substring(nameEQ.length, cookie.length);
+                }
+            }
+            return null;
+        }
+
+        var userID = getCookie('userID');
+        if (!userID) {
+            // If userId is not present, redirect to index.html
+            window.location.href = 'index.html';
+        }
+
+        fetch(`/status?experimentName=${experimentName}&experimentId=${experimentId}&userId=${userID}`)
         .then(response => response.json())
         .then(data => {
             const experimentInfoTable = document.getElementById('experimentInfoTable');
@@ -67,8 +88,8 @@
 
             // Display action buttons based on experiment status
             if(experimentId === '98761121'){
-            //Avoid allocating this way as it becomes challegning to manage
-            console.log('action buttons hidden for banner experiment')
+                //Avoid allocating this way as it becomes challegning to manage
+                console.log('action buttons hidden for banner experiment')
             } else if (experimentStatus === 'Not started') {
                 const startButton = document.createElement('button');
                 startButton.textContent = 'Start Experiment';
@@ -80,6 +101,7 @@
                     const queryParams = {
                         experimentName: experimentInfo.experimentName,
                         experimentId: experimentInfo.experimentId,
+                        userId: userID,
                         durationDays: durationDays || 14, // Default value if not provided
                         sampleSize: sampleSize || '', // Empty string if not provided
                         trafficRate: trafficRate || '' // Empty string if not provided
@@ -115,7 +137,8 @@
                             },
                             body: JSON.stringify({
                                 experimentName: experimentInfo.experimentName,
-                                experimentId: experimentInfo.experimentId
+                                experimentId: experimentInfo.experimentId,
+                                userId: userID
                             })
                         });
                         const data = await response.json();
@@ -141,7 +164,8 @@
                             body: JSON.stringify({
                                 experimentName: experimentInfo.experimentName,
                                 experimentId: experimentInfo.experimentId,
-                                decision: 'B'
+                                decision: 'B',
+                                userId: userID
                             })
                         });
                         const data = await response.json();
@@ -166,7 +190,8 @@
                             },
                             body: JSON.stringify({
                                 experimentName: experimentInfo.experimentName,
-                                experimentId: experimentInfo.experimentId
+                                experimentId: experimentInfo.experimentId,
+                                userId: userID
                             })
                         });
                         const data = await response.json();

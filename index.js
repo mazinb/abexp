@@ -7,7 +7,7 @@ require('dotenv').config();
 const app = express();
 const port = process.env.PORT || 8280;
 
-// Ass your API key here or create a .env file to store it
+// Add your API key here
 const apiKey = process.env.API_KEY;
 
 // Define the endpoint URL
@@ -17,12 +17,26 @@ const headers = {
     'x-api-key': apiKey
 };
 
+
 // Serve static files from the "public" directory
-//app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.static("public"));
 
 // Middleware to parse JSON bodies
 app.use(bodyParser.json());
+
+// Middleware to dynamically add userId to headers if it exists in the request body
+const addUserIdToHeaders = (req, res, next) => {
+    // Check if userId exists in the request query or request body
+    if(req.query.userId){
+        headers['uuid'] = req.query.userId;
+    }
+    if (req.body) {
+        headers['uuid'] = req.body.userId;
+    }
+    next();
+};
+
+app.use(addUserIdToHeaders);
 
 app.post('/allocation', async (req, res) => {
     const data = {
