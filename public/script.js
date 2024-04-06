@@ -175,13 +175,14 @@ async function submitExperiment(event) {
         const data = await response.json();
         const message = document.createElement('div');
 
+        // Hide the createExperimentForm
+        const createExperimentForm = document.getElementById('createExperimentForm');
+        createExperimentForm.style.display = 'none';
+
         if (response.ok) {
             const experimentInfo = data.experimentInfo;
             message.textContent = `Experiment created successfully! Name: ${experimentInfo.experimentName}, Experiment ID: ${experimentInfo.experimentId}. Please save the experiment Name and ID if you want to use it.`;
             trackEvent('experiment_created', experimentInfo);
-            // Hide the createExperimentForm
-            const createExperimentForm = document.getElementById('createExperimentForm');
-            createExperimentForm.style.display = 'none';
             // Create a button to view experiment details
             const viewButton = document.createElement('button');
             viewButton.textContent = 'View Experiment Details';

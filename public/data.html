@@ -90,7 +90,7 @@
             if(experimentId === '98761121'){
                 //Avoid allocating this way as it becomes challegning to manage
                 console.log('action buttons hidden for banner experiment')
-            } else if (experimentStatus === 'Not started') {
+            } else if (experimentStatus === 'Not started' || experimentStatus === 'Stopped') {
                 const startButton = document.createElement('button');
                 startButton.textContent = 'Start Experiment';
                 startButton.onclick = async () => {
@@ -129,8 +129,10 @@
                 flatOffButton.textContent = 'Flat Off';
                 flatOffButton.onclick = async () => {
                     try {
+                        // Disable the button to prevent multiple clicks
+                        flatOffButton.disabled = true;
                         // Implement logic to flat off
-                        const response = await fetch('/restart', {
+                        const response = await fetch('/stop', {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json'
@@ -155,6 +157,9 @@
                 flatBButton.textContent = 'Flat B';
                 flatBButton.onclick = async () => {
                     try {
+                        // Disable the button to prevent multiple clicks
+                        flatBButton.disabled = true;
+
                         // Implement logic to flat B
                         const response = await fetch('/decision', {
                             method: 'POST',
@@ -178,6 +183,8 @@
                 };
                 actionButtons.appendChild(flatBButton);
             } else if (experimentStatus === 'Flat B') {
+                console.log('status is flat-B');
+                /*
                 const stopButton = document.createElement('button');
                 stopButton.textContent = 'Stop Experiment';
                 stopButton.onclick = async () => {
@@ -202,7 +209,7 @@
                         alert('Failed to stop experiment. Please try again.');
                     }
                 };
-                actionButtons.appendChild(stopButton);
+                actionButtons.appendChild(stopButton);*/
             }
             if (experimentStatus !== 'Not started') {
                 // Populate runData table
