@@ -57,7 +57,7 @@ app.get('/status', async(req,res)=>{
 
     try {
         const response = await axios.get(endpoint+`status/?experimentName=${req.query.experimentName}&experimentId=${req.query.experimentId}`, { headers });
-        
+
         if (response.data.status === 'fail') {
             // If the API response indicates failure, send the error message
             res.status(response.status).send(response.data.message);
@@ -90,13 +90,17 @@ app.get('/events', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'events.html'));
 });
 
+app.get('/mockTest', (_req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'mockTest.html'));
+});
+
 app.post('/start',async(req,res)=>{
 
     /*body = {
         "experimentName": "banner_exp_01",//required - saved experiment name
         "experimentId": 98761121, //required - saved experiment Id
         "durationDays": 30, //optional - default 14
-        "sampleSize": 1000, //optional 
+        "sampleSize": 1000, //optional
         "trafficRate": 100 //optional 0 - 100
     };*/
 
@@ -111,7 +115,7 @@ app.post('/restart',async(req,res)=>{
         "experimentName": "MyFirstExperiment",
         "experimentId": 17945202,
         "durationDays": 30, //optional - default 14
-        "sampleSize": 1000, //optional 
+        "sampleSize": 1000, //optional
         "trafficRate": 100 //optional 0 - 100
     }*/
 
@@ -121,7 +125,7 @@ app.post('/restart',async(req,res)=>{
 });
 
 app.post('/stop',async(req,res)=>{
-    
+
     /*body = {
         "experimentName": "MyFirstExperiment",
         "experimentId": 17945202

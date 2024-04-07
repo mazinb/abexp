@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Display</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        th, td {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+		<script src="./mockExperiment.js"></script>
+		<script>
+			let exp
+     	function createExperiment() {
+      	exp = new MockExperiment(document.getElementById('experimentName').value)
+        exp.start(100,0,0)
+      }
+      function allocate() {
+      	const userId = document.getElementById('userId').value
+      	const variant = exp.getUserAllocation(userId)
+       	console.log(userId + ": " + variant)
+      }
+    </script>
+    <h1>Mock Experiment Testing Page</h1>
+    <input type="text" id="experimentName" value="MyDemoExperiment" required>
+    <button id="createExpBtn" type="submit" onclick="createExperiment();">Create Experiment</button>
+
+    <input type="text" id="userId" value="Mary Jane" required>
+    <button id="allocateUserBtn" type="submit" onclick="allocate();">Add User To Experiment</button>
+</body>
+</html>
